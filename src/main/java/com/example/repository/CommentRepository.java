@@ -20,10 +20,29 @@ public class CommentRepository {
 	@Autowired
 	private NamedParameterJdbcTemplate template;
 	
-	public List<Comment> findByArticleId(Integer ArticleId){
-		String sql = "select * from comments where ArticleId = :ArticleId";
-		SqlParameterSource param = new MapSqlParameterSource().addValue("ArticleId", ArticleId);
+	public List<Comment> findByArticleId(Integer Article_id){
+		String sql = "select * from comments where Article_id = :Article_id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("Article_id", Article_id);
 		List<Comment> commentList = template.query(sql, param, COMMENT_ROW_MAPPER);
 		return commentList;
+	}
+	
+	public void insert(Comment comment) {
+		String sql = "insert into comments "
+				+ "       ( name,   content, article_id) "
+				+ "values (:name, :content, :article_id)";
+		SqlParameterSource param = new MapSqlParameterSource()
+				.addValue("name", comment.getName())
+				.addValue("content", comment.getContent())
+				.addValue("article_id", comment.getArticle_id());
+		
+		template.update(sql, param);
+	}
+	
+	public void deleteByArticleId(int article_id) {
+		String sql = "delete from comments where article_id = :article_id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("article_id", article_id);
+		
+		template.update(sql, param);
 	}
 }
